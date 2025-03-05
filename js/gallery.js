@@ -58,7 +58,7 @@ const createGallery = ({ preview, original, description }) => {
   <a class="gallery-link" href="${original}">
     <img
       class="gallery-image"
-      src="${preview}";
+      src="${preview}"
       data-source="${original}"
       alt="${description}"
     />
@@ -91,24 +91,34 @@ galleryBox.appendChild(refs.galleryList);
 //MODAL
 //
 //
+let activeModal = null;
 const clickEvent = event => {
   event.preventDefault();
   const currentCard = event.target.closest('.gallery-image');
-  const currentImageUrl = currentCard.dataset.source;
-
   if (!currentCard) {
     return;
   }
-
-  const { preview, original, description } = images;
-  const createGallery = basicLightbox.create(
+  const currentImageUrl = currentCard.dataset.source;
+  const currentImageAlt = event.target.alt;
+  activeModal = basicLightbox.create(
     `
-    <img class="modal-img" src="${currentImageUrl}" alt="${description} " />
-    `
+    <img src="${currentImageUrl}" alt="${currentImageAlt}" />
+    `,
+    {
+      className: 'modal-image',
+    }
   );
-  createGallery.show();
-  const closeModal = event => createGallery.close();
+  activeModal.show();
+  document.addEventListener('keydown', onEscDown);
 };
+
+const onEscDown = event => {
+  if (event.key === 'Escape' && activeModal) {
+    activeModal.close();
+    document.removeEventListener('keydown', onEscDown);
+  }
+};
+// const closeModal = event => createGalleryCard.close();
 
 refs.galleryList.addEventListener('click', clickEvent);
 //----
