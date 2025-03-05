@@ -91,37 +91,34 @@ galleryBox.appendChild(refs.galleryList);
 //MODAL
 //
 //
-let activeModal = null;
+const activeModal = basicLightbox.create(
+  `
+    <img src=" " alt=" " />
+    `,
+  {
+    className: 'modal-wrap',
+    onShow: () => document.addEventListener('keydown', onEscDown),
+    onClose: () => document.removeEventListener('keydown', onEscDown),
+  }
+);
 const clickEvent = event => {
   event.preventDefault();
   const currentCard = event.target.closest('.gallery-image');
   if (!currentCard) {
     return;
   }
-  const currentImageUrl = currentCard.dataset.source;
-  const currentImageAlt = event.target.alt;
-  activeModal = basicLightbox.create(
-    `
-    <img src="${currentImageUrl}" alt="${currentImageAlt}" />
-    `,
-    {
-      className: 'qve',
-      onShow: () => document.addEventListener('keydown', onEscDown),
-      onClose: () => document.removeEventListener('keydown', onEscDown),
-    }
-  );
+  const modalImg = activeModal.element().querySelector('img');
+  modalImg.src = event.target.dataset.source;
+  modalImg.alt = event.target.alt;
+
   activeModal.show();
-  // document.addEventListener('keydown', onEscDown);
 };
 
 const onEscDown = event => {
-  console.log(event.key);
   if (event.key === 'Escape' && activeModal) {
     activeModal.close();
-    // document.removeEventListener('keydown', onEscDown);
   }
 };
-// const closeModal = event => createGalleryCard.close();
 
 refs.galleryList.addEventListener('click', clickEvent);
 //----

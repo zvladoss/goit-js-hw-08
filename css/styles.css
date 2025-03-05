@@ -24,6 +24,11 @@ ul {
 }
 
 .gallery-item {
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-item:hover {
+  transform: scale(1.08);
 }
 .gallery-link {
 }
@@ -31,4 +36,7 @@ ul {
   display: block;
   width: 360px;
   max-height: 200px;
+}
+
+.modal-wrap > div > img:hover {
 }
