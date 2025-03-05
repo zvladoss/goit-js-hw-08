@@ -105,17 +105,20 @@ const clickEvent = event => {
     <img src="${currentImageUrl}" alt="${currentImageAlt}" />
     `,
     {
-      className: 'modal-image',
+      className: 'qve',
+      onShow: () => document.addEventListener('keydown', onEscDown),
+      onClose: () => document.removeEventListener('keydown', onEscDown),
     }
   );
   activeModal.show();
-  document.addEventListener('keydown', onEscDown);
+  // document.addEventListener('keydown', onEscDown);
 };
 
 const onEscDown = event => {
+  console.log(event.key);
   if (event.key === 'Escape' && activeModal) {
     activeModal.close();
-    document.removeEventListener('keydown', onEscDown);
+    // document.removeEventListener('keydown', onEscDown);
   }
 };
 // const closeModal = event => createGalleryCard.close();
