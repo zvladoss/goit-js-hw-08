@@ -122,3 +122,76 @@ const onEscDown = event => {
 
 refs.galleryList.addEventListener('click', clickEvent);
 //----
+
+const refs = {
+  feedbackForm: document.querySelector('.js-feedback-form'),
+};
+let formData = {};
+
+const fillFormFields = feedbackForm => {
+  // Створюємо функцію,яка буде заповнювати поля форми,при повторному відкритті після перезавантаження або закриття сторінки.
+  // Буде викликатися одразу при відкритті сторінки.
+
+  const formDataFromLS = JSON.parse(localStorage.getItem('feedback-form-state'));
+
+  // Звертаємося до localStorage за допомогою getItem і передаємо йому ключ 'feedback-form-state' данні під яким ми хочемо дістати.
+  // Дані у вигляді рядка у JSON- форматі.Тому треба розпарсити.
+
+  if (formDataFromLS === null) {
+    return;
+  }
+  // Якщо користувач заходить вперше і ще не заповнював форму - повертається null тому,потрібна перевірка, щоб не виникала помилка. Якщо null - функція не виконується.Скрипт очікує на заповнення форми.
+
+  formData = formDataFromLS;
+  // Щоб при редагуванні вже заповненого поля не перезаписувався повністю об'єкт,а перезаписувалось значення властивості,яка  була змінена.
+
+  const formDataKeys = Object.keys(formDataFromLS);
+  formDataKeys.forEach(key => {
+    feedbackForm.elements[key].value = formDataFromLS[key];
+  });
+};
+
+// Зчитує данні з localStorage, парсить ці данні, з якими вже можна працювати.
+
+fillFormFields(refs.feedbackForm);
+
+const onFormFieldChange = ({ target: formField }) => {
+  // Деструктуризуємо об'єкт який передають і дістаємо із нього значення властивості target до змінної форм field
+
+  /** 
+  const { target: formField } = event; ---- другий спосіб вивести значення ім'я атрибуту(назви поля) і значення інпуту,що ввів користувач  
+  const fieldName = formField.name;
+  const fieldValue = formField.value;
+  */
+
+  const fieldName = formField.name;
+  const fieldValue = formField.value;
+
+  // Створюємо змінну і записуєм значення властивостей
+
+  /**
+    formData.test = 'some test' ---- додаємо нову властивість test із значенням some test.Синтаксис через крапку, один із способів.
+  */
+  formData[fieldName] = fieldName;
+
+  // Заповнюємо об'єкт. в якості ключа використовуємо значення змінної fieldName(значення атрибута name цільового елемента. formField.name)
+  // B якості значення властивості використовуємо значення змінної fieldValue(значення атрибута value цільового елемента formField.value. Значення,яке користувач вводив).
+  // formData[formfieldName] = formfieldValue //
+
+  localStorage.setItem('feedback-form-state', JSON.stringify(formData));
+
+  // Відправляємо об'єкт до localStorage
+  // 'feedback-form-state' --- ключ,під яким буде зберігатися
+  // JSON.stringify(formData) --- передаємо об'єкт у вигляді рядка за допомогою конструктора JSON. ЦЕ буде значенням ключа 'feedback-form-state'.
+};
+
+const onFeedbackFormSubmit = event => {
+  event.preventDefailt();
+  localStorage.removeItem('feedback-on-state');
+  event.currentTarget.reset();
+};
+
+// При submit чистимо localStorage та форму.
+
+refs.feedbackForm.addEventListener('change', onFormFieldChange);
+refs.feedbackForm.addEventListener('submit', onFeedbackFormSubmit);
